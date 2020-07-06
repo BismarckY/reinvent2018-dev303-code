@@ -43,11 +43,11 @@ and you should see a list of nodes:
 
 ```bash
 $ kubectl get nodes
-NAME                                           STATUS    ROLES     AGE       VERSION
-ip-192-168-29-95.us-west-2.compute.internal    Ready     <none>    2m        v1.10.3
-ip-192-168-62-87.us-west-2.compute.internal    Ready     <none>    2m        v1.10.3
-ip-192-168-70-32.us-west-2.compute.internal    Ready     <none>    2m        v1.10.3
-ip-192-168-74-223.us-west-2.compute.internal   Ready     <none>    2m        v1.10.3
+NAME                                           STATUS   ROLES    AGE     VERSION
+ip-192-168-0-159.us-west-2.compute.internal    Ready    <none>   6m1s    v1.16.8-eks-fd1ea7
+ip-192-168-12-175.us-west-2.compute.internal   Ready    <none>   6m3s    v1.16.8-eks-fd1ea7
+ip-192-168-38-84.us-west-2.compute.internal    Ready    <none>   63s     v1.16.8-eks-fd1ea7
+ip-192-168-86-64.us-west-2.compute.internal    Ready    <none>   2m56s   v1.16.8-eks-fd1ea7
 ```
 
 ## Deploy "AnyCompany Shop" microservices application
@@ -66,35 +66,6 @@ First, deploy the definitions to prepare the environment. This step creates a Ku
 kubectl create -f deploy/eks/prep.yaml
 ```
 > For demo purposes some values are pre-generated. Replace them with your own, base64 encoded, values to improve security.
-
-### Prepare and deploy credentials
-
-Attach the necessary IAM policies to the worker nodes. This will enable containers running on these nodes to access AWS resources. Two of the services you will deploy in the next step are making use of this to access DynamoDB and SQS.
-```bash
-
-# Get the nodegroup (assuming there is only 1 nodegroup at this point)
-NODEGROUP=$(eksctl get nodegroups --cluster=dev303-workshop | awk '{print $2}' | tail -n1)
-
-# Get EKS worker node IAM instance role ARN
-PROFILE=$(aws ec2 describe-instances --filters Name=tag:Name,Values=dev303-workshop-$NODEGROUP-Node --query 'Reservations[0].Instances[0].IamInstanceProfile.Arn' --output text | cut -d '/' -f 2)
-
-# Fetch IAM instance role name
-ROLE=$(aws iam get-instance-profile --instance-profile-name $PROFILE --query "InstanceProfile.Roles[0].RoleName" --output text)
-
-echo $ROLE # Print role name
-
-# Attach IAM policy for Orderservice
-ARN=$(aws iam list-policies --scope Local --query "Policies[?PolicyName=='OrderserviceSQS-Policy'].Arn" --output text)
-echo $ARN
-aws iam attach-role-policy --role-name $ROLE --policy-arn $ARN
-
-# Attach IAM poliy for Catalogservice
-ARN=$(aws iam list-policies --scope Local --query "Policies[?PolicyName=='CatalogserviceDDB-Policy'].Arn" --output text)
-echo $ARN
-aws iam attach-role-policy --role-name $ROLE --policy-arn $ARN
-```
-
-> In a production setup this is **discouraged**. Please use a solution that will fetch temporary credentials for each Pod via IAM and STS.
 
 ### Deploy "AnyCompany Shop"
 
