@@ -36,10 +36,10 @@ To deploy the X-Ray **DaemonSet** to the Amazon EKS cluster.
 kubectl apply -f deploy/tracing/
 ```
 
-The X-Ray daemon will be deployed to the `kube-system` namespace, so run 
+The X-Ray daemon will be deployed to the `microservices-aws` namespace, so run 
 
 ```
-kubectl get pods -l app=xray-daemon -n kube-system
+kubectl get pods -l app=xray-daemon -n microservices-aws
 ```
 
 This should print something similar to
@@ -173,11 +173,6 @@ To stop generating chaos within your application simply delete the generator wit
 ```
 kubectl delete -f deploy/eks/randomizer.yaml
 ```
-
-### Adapting DynamoDB capacity
-To understand and visualize the effect of a slowly responding microservice you can adapt the DynamoDB capacity for the **ProductCatalog** table used by the `catalogservice`. Switch to **DynamoDB** within the *AWS Console* and select the **Capacity** tab. If you lower the capacity allocated to the DynamoDB table to a very low value you may see an impact in the AWS X-Ray traces quickly because DynamoDB will throttle some of the requests to the `ProductCatalog` table.
-
-![grafana-import](images/ddb-capacity.png)
 
 # What's Next?
 
