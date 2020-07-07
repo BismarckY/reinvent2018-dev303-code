@@ -33,7 +33,7 @@ spec:
     spec:
       initContainers:
         - name: data-load
-          image: ckassen/catalogservice:latest
+          image: pellegrino/catalogservice:dataload-no-xray
           command: ["flask", "import-data"]
           envFrom: 
             - 
@@ -56,7 +56,7 @@ spec:
               memory: 128Mi
       containers:
         - name: catalogservice
-          image: ckassen/catalogservice:xray
+          image: ckassen/catalogservice:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

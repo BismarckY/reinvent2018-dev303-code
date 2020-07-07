@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: orderservice
-          image: ckassen/orderservice:xray
+          image: ckassen/orderservice:latest
           imagePullPolicy: Always
           ports:
           - containerPort: 8080

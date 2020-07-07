@@ -15,18 +15,17 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-FROM python:3-alpine
+FROM python:3.7-alpine
 
+COPY requirements.txt ./
 RUN apk add --no-cache --virtual .build-deps \
-    build-base libev \
+    build-base libev libffi-dev musl-dev gcc \
     && pip install gevent simplejson \
+    && pip install -r requirements.txt \
     && apk del --no-cache .build-deps \
     && rm -rf /var/cache/apk/* /root/.cache /tmp/*
 
 WORKDIR /usr/src/app
-
-COPY requirements.txt ./
-RUN pip install -r requirements.txt
 
 COPY . .
 
