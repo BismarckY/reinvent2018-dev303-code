@@ -19,7 +19,8 @@ Find the name of your EKS **worker node group** and attach the **X-Ray IAM polic
 NODEGROUP=$(eksctl get nodegroups --cluster=dev303-workshop | awk '{print $2}' | tail -n1)
 
 # Get EKS worker node IAM instance role ARN
-PROFILE=$(aws ec2 describe-instances --filters Name=tag:Name,Values=dev303-workshop-$NODEGROUP-Node --query 'Reservations[0].Instances[0].IamInstanceProfile.Arn' --output text | cut -d '/' -f 2)
+PROFILE=$(aws ec2 describe-instances --filters Name=tag:eks:nodegroup-name,Values=$NODEGROUP --query 'Reservations[0].Instances[0].IamInstanceProfile.Arn' --output text | cut -d '/' -f 2)
+
 
 ROLE=$(aws iam get-instance-profile --instance-profile-name $PROFILE --query "InstanceProfile.Roles[0].RoleName" --output text)
 
