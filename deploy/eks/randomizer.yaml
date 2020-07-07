@@ -56,19 +56,21 @@ subjects:
   namespace: microservices-aws
 
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: randomizer
   namespace: microservices-aws
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: randomizer
   template:
     metadata:
       labels:
         app: randomizer
     spec:
-      serviceAccount: randomizer
       serviceAccountName: randomizer
       containers:
       - name: randomizer

@@ -119,14 +119,15 @@ mkdir -p ~/.kube
 
 ### *Install kubectl*
 ```
-sudo curl --silent --location -o /usr/local/bin/kubectl "https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/kubectl"
+sudo curl --silent --location -o /usr/local/bin/kubectl "https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl"
 sudo chmod +x /usr/local/bin/kubectl
 ```
 
 ### *Install AWS IAM Authenticator*
 ```
-go get -u -v github.com/kubernetes-sigs/aws-iam-authenticator/cmd/aws-iam-authenticator
-sudo mv ~/go/bin/aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
+curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator
+sudo mv aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
+sudo chmod a+x /usr/local/bin/aws-iam-authenticator
 ```
 
 ### *Verify installation*

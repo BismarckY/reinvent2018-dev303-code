@@ -13,6 +13,7 @@ Use the following command to create your **EKS** cluster **without** adding ssh 
 eksctl create cluster \
 --name dev303-workshop \
 --region us-west-2 \
+--managed
 --nodes=4
 ```
 
@@ -23,6 +24,7 @@ eksctl create cluster \
 --name dev303-workshop \
 --region us-west-2 \
 --nodes=4
+--managed
 --ssh-access --ssh-public-key=myid_rsa_ssh_key.pub
 ```
 
@@ -42,10 +44,10 @@ and you should see a list of nodes:
 ```bash
 $ kubectl get nodes
 NAME                                           STATUS    ROLES     AGE       VERSION
-ip-192-168-29-95.us-west-2.compute.internal    Ready     <none>    2m        v1.10.3
-ip-192-168-62-87.us-west-2.compute.internal    Ready     <none>    2m        v1.10.3
-ip-192-168-70-32.us-west-2.compute.internal    Ready     <none>    2m        v1.10.3
-ip-192-168-74-223.us-west-2.compute.internal   Ready     <none>    2m        v1.10.3
+ip-192-168-0-159.us-west-2.compute.internal    Ready    <none>   6m1s    v1.16.8-eks-fd1ea7
+ip-192-168-12-175.us-west-2.compute.internal   Ready    <none>   6m3s    v1.16.8-eks-fd1ea7
+ip-192-168-38-84.us-west-2.compute.internal    Ready    <none>   63s     v1.16.8-eks-fd1ea7
+ip-192-168-86-64.us-west-2.compute.internal    Ready    <none>   2m56s   v1.16.8-eks-fd1ea7
 ```
 
 ## Deploy "AnyCompany Shop" microservices application
@@ -102,7 +104,7 @@ Attach the necessary IAM policies to the worker nodes. This will enable containe
 NODEGROUP=$(eksctl get nodegroups --cluster=dev303-workshop | awk '{print $2}' | tail -n1)
 
 # Get EKS worker node IAM instance role ARN
-PROFILE=$(aws ec2 describe-instances --filters Name=tag:Name,Values=dev303-workshop-$NODEGROUP-Node --query 'Reservations[0].Instances[0].IamInstanceProfile.Arn' --output text | cut -d '/' -f 2)
+PROFILE=$(aws ec2 describe-instances --filters Name=tag:eks:nodegroup-name,Values=$NODEGROUP --query 'Reservations[0].Instances[0].IamInstanceProfile.Arn' --output text | cut -d '/' -f 2)
 
 # Fetch IAM instance role name
 ROLE=$(aws iam get-instance-profile --instance-profile-name $PROFILE --query "InstanceProfile.Roles[0].RoleName" --output text)

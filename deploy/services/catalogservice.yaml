@@ -14,12 +14,16 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalogservice
   namespace: microservices-aws
 spec:
+  selector:
+    matchLabels:
+      app: catalogservice
+      product: storefront
   replicas: 2
   template:
     metadata:
