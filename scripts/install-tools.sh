@@ -65,5 +65,5 @@ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 
 if [ ! -d "reinvent2018-dev303-code/" ]; then
   # Download lab Repository
-  git clone https://github.com/aws-samples/reinvent2018-dev303-code
+  git clone https://github.com/vitorpe/reinvent2018-dev303-code
 fi

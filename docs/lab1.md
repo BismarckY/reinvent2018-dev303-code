@@ -15,6 +15,7 @@ eksctl create cluster \
 --region us-west-2 \
 --managed \
 --nodes=4
+--ssh-access
 ```
 
 **Advanced** Use the following command to create your **EKS** cluster **adding** ssh keys for access to the worker nodes (first generate your ssh keypair if not done already):

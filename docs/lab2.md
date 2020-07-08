@@ -5,8 +5,39 @@ Access to log information from the containers that were deployed to your Amazon 
 In this lab, you will be using CloudWatch Logs to monitor the logs of your containers and Prometheus/Grafana to monitor metrics.
 
 ## Using Amazon CloudWatch Container Insights
+Before we can deploy the Amazon CloudWatch Container insigths to our EKS cluster, we need to apply the necessary IAM permissions. 
+
+```bash
+eksctl utils associate-iam-oidc-provider \
+               --name dev303-workshop \
+               --approve
+```
+Attach the CloudWatchAgentServerPolicy policy to the service account used by FluentD and CloudWatchAgent. This allows FluentD and CloudWatch Agent-Ray Pods on any worker node to send logging information to CloudWatch. These instructions use eksctl to enable the necessary setup in the EKS cluster and create a service account attached to the right IAM role.
+
+```bash 
+eksctl create iamserviceaccount \
+                --name cloudwatch-agent \
+                --namespace amazon-cloudwatch \
+                --cluster dev303-workshop \
+                --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+                --approve --override-existing-serviceaccounts
+
+eksctl create iamserviceaccount \
+                --name fluentd \
+                --namespace amazon-cloudwatch \
+                --cluster dev303-workshop \
+                --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+                --approve --override-existing-serviceaccounts
+```
 Please follow the instructions in the CloudWatch Container Insights documentation at https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/deploy-container-insights-EKS.html
 to set up the necessary permissions for your worker nodes, set up CWAgent daemonset and add Fluentd daemonset to your EKS cluster.
+
+Alternatively, you can use the provided quickstart Kubernetes manifest to quick start Amazon CloudWatch Container Insights
+
+````bash
+$ kubectl apply -f deploy/monitoring/cwagent-fluentd-quickstart.yaml 
+````
+
 
 Afterwards head to the Amazon CloudWatch console [CloudWatch Container Insights console](https://console.aws.amazon.com/cloudwatch/home#cw:dashboard=Container;context=~(clusters~(~)~dimensions~(~)~performanceType~'ClusterName)) and view metrics for your cluster. You can switch to CloudWatch Logs Insights to view the logs for each individual Pod directly from this dashboard.
 
@@ -14,9 +45,6 @@ Afterwards head to the Amazon CloudWatch console [CloudWatch Container Insights 
 ## Previous Instructions
 
 Recommended approach is to use Amazon CloudWatch Container Insights. If you still like to run Prometheus, Grafana see instructions below.
-
-## Collecting logs using `FluentBit`
-Deploy Fluentd as a Daemonset to collect logs and send them to CloudWatch Logs. Full instructions are documented here [Centralized container logging with FluentBit](https://aws.amazon.com/blogs/opensource/centralized-container-logging-fluent-bit/) for EKS and ECS.
 
 ## Health and Performance Monitoring
 
@@ -105,7 +133,7 @@ You can get Grafana ELB URL using this command. Copy & Paste the returned URL in
 kubectl get svc -n grafana grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
 ```
 
-Log in with **Username: admin** and **Password LasVegas!**
+Log in with **Username: admin** and **Password AWSome-week**
 
 ### Create Dashboards
 

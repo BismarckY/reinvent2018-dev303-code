@@ -12,11 +12,15 @@ In this module, we are going to deploy the [X-Ray agent](https://docs.aws.amazon
 
 Before we can deploy the AWS X-Ray daemon to the EKS cluster we need to apply the necessary IAM permissions. Attach the `AWSXRayDaemonWriteAccess` policy to the service account for the X-Ray daemon. This allows the X-Ray Pods on any worker node to send trace data to the AWS X-Ray backend. These instructions use eksctl to enable the necessary setup in the EKS cluster and create a service account attached to the right IAM role.
 
+If you followed the instructions on [lab 2](lab2.md), you may skip the following command as it was done previously.
+
 ```bash
 eksctl utils associate-iam-oidc-provider \
                --name dev303-workshop \
                --approve
 ```
+
+Now create the IAM Service account to provide X-Ray pods with correct IAM permissions.
 
 ```bash
 eksctl create iamserviceaccount \
@@ -24,7 +28,7 @@ eksctl create iamserviceaccount \
                 --namespace microservices-aws \
                 --cluster dev303-workshop \
                 --attach-policy-arn arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess \
-                --approve
+                --approve --override-existing-serviceaccounts
 ```
 
 ### Deploy AWS X-Ray daemonset

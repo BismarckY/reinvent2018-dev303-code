@@ -57,7 +57,7 @@ aws configure get default.region
 The necessary tooling can be installed using a script. Run:
 
 ```bash
-git clone https://github.com/aws-samples/reinvent2018-dev303-code
+git clone https://github.com/vitorpe/reinvent2018-dev303-code
 cd reinvent2018-dev303-code
 bash ./scripts/install-tools.sh
 ```
